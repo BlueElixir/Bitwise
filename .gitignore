@@ -1,0 +1,8 @@
+
+*.vsidx
+*.lock
+*.db
+*.db-shm
+.vs/idle-game-project/v17/.suo
+.vs/idle-game-project/v17/Browse.VC.opendb
+*.db-wal
