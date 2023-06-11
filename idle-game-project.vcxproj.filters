@@ -15,78 +15,78 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classes\game_manager_t\game_manager_t.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classes\imgui_manager_t\imgui_manager_t.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classes\dx_manager_t\dx_manager_t.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_impl_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_tables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_dx9.cpp">
+    <ClCompile Include="source\dx9_imgui\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp">
+    <ClCompile Include="source\dx9_imgui\dx9_imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_stdlib.cpp">
+    <ClCompile Include="source\globals\globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+    <ClCompile Include="source\user_interface\user_interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+    <ClCompile Include="source\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="classes\game_manager_t\game_manager_t.hpp">
+    <ClInclude Include="source\dx9_imgui\imgui\imconfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="classes\imgui_manager_t\imgui_manager_t.hpp">
+    <ClInclude Include="source\dx9_imgui\imgui\imgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="classes\dx_manager_t\dx_manager_t.hpp">
+    <ClInclude Include="source\dx9_imgui\imgui\imgui_impl_dx9.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imconfig.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imgui_impl_win32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imgui.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imgui_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_impl_dx9.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imgui_stdlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_impl_win32.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imstb_rectpack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_internal.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imstb_textedit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imgui_stdlib.h">
+    <ClInclude Include="source\dx9_imgui\imgui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+    <ClInclude Include="source\dx9_imgui\dx9_imgui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_textedit.h">
+    <ClInclude Include="source\globals\globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\imstb_truetype.h">
+    <ClInclude Include="source\user_interface\user_interface.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
