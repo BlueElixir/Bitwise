@@ -58,22 +58,19 @@ void user_interface_t::draw_intro_logo() {
 
         }
 
-        draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
-        draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
-        draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
+        //draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
+        //draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
+        //draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
+
         draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { xx, yy }, { xx + x, yy + y }, { 0, 0 }, { 1, 1 }, color);
-
-
-        //draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { 50, 50 }, { 50 + x, 50 + y });
 
         if (this->anim_timer == 4.6f) {
             this->intro_state = 1;
             this->anim_timer = 0.f;
         }
-            
-
+        
     }
-    else {
+    else if (this->intro_state == 1) {
 
         constexpr float x = 441, y = 131;
         const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
@@ -110,12 +107,16 @@ void user_interface_t::draw_intro_logo() {
 
         }
 
-        draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
-        draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
-        draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
+        //draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
+        //draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
+        //draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
 
         draw->AddImage(gvars.textures.images[gvars.textures.Image_bitwise], { xx, yy }, { xx + x, yy + y }, { 0, 0 }, { 1, 1 }, color);
 
+        if (this->anim_timer == 3.6f) {
+            this->intro_state = 2;
+            this->anim_timer = 0.f;
+        }
     }
 
 }
@@ -168,12 +169,13 @@ void user_interface_t::draw_exit_button() {
     draw->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), get_fade_color(pos, { pos.x + size.x, pos.y + size.y }, ImColor(255, 0, 0, 0), ImColor(255, 0, 0, 255), state1));
 
     ImGui::PushFont(gvars.textures.fonts[20]);
-    draw->AddText({ pos.x + 5, pos.y - 3 }, ImColor(255, 255, 255), "x");
+    draw->AddText({ pos.x + 5, pos.y + 1 }, ImColor(255, 255, 255), "x");
     ImGui::PopFont();
 
     if (ImGui::IsMouseHoveringRect(pos, { pos.x + size.x, pos.y + size.y }))
         if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
             gvars.states.should_exit = true;
+
 }
 
 

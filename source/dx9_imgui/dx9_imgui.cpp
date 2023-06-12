@@ -14,6 +14,8 @@
 
 #include "../globals/globals.hpp"
 
+#include "../../resource.h"
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND window, UINT message, WPARAM wide_parameter, LPARAM long_parameter);
 
 long __stdcall Window_process(HWND window, UINT message, WPARAM wide_parameter, LPARAM long_parameter) {
@@ -78,6 +80,12 @@ void dx9::create_window(const char* window_name, const char* class_name) noexcep
 	window_class.lpszMenuName = 0;
 	window_class.lpszClassName = class_name;
 	window_class.hIconSm = 0;
+	window_class.hIcon = (HICON)LoadImage(
+		window_class.hInstance,
+		MAKEINTRESOURCE(IDI_ICON1),
+		IMAGE_ICON,
+		0, 0,
+		LR_DEFAULTSIZE);
 
 	RegisterClassEx(&window_class);
 

@@ -28,6 +28,7 @@ struct globals_t {
 	struct textures_t {
 
 		enum images {
+
 			Image_springtime = 0,
 			Image_bitwise = 1,
 		};

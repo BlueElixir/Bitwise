@@ -4,14 +4,14 @@
 #include "globals/globals.hpp"
 #include "user_interface/user_interface.hpp"
 
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 int main() {
 #else
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nShowCmd) {
 #endif
 
-	dx9::create_window("window", "window class");
+	dx9::create_window("Bitwise - Idle Game", "bitwise_class");
 	dx9::create_device();
 	gui::create_imgui();
 
