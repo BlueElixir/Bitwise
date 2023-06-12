@@ -27,17 +27,13 @@ struct globals_t {
 
 	struct textures_t {
 
-		std::vector<LPDIRECT3DTEXTURE9> images;
-		std::vector<std::vector<char>> files;
+		enum images {
+			Image_springtime = 0,
+			Image_bitwise = 1,
+		};
 
-		struct texture_data_t {
-
-			int width;
-			int height;
-			float aspect_ratio;
-			std::string filename;
-
-		}; std::vector<texture_data_t> data;
+		std::vector<LPDIRECT3DTEXTURE9> images = { nullptr, nullptr };
+		std::vector<ImFont*> fonts;
 
 	} textures;
 

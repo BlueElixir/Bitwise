@@ -150,6 +150,9 @@
     <ClCompile Include="source\user_interface\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="byte_array\whitrabt.h" />
+    <ClInclude Include="byte_array\_bitwise.h" />
+    <ClInclude Include="byte_array\_springtime.h" />
     <ClInclude Include="source\dx9_imgui\dx9_imgui.hpp" />
     <ClInclude Include="source\dx9_imgui\imgui\imconfig.h" />
     <ClInclude Include="source\dx9_imgui\imgui\imgui.h" />

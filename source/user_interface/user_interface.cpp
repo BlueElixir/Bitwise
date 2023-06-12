@@ -15,6 +15,35 @@ void user_interface_t::draw_intro_logo() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
 
+    switch (this->intro_state) {
+
+        case 0: {
+
+            // static_cast<float>(gvars.window.width)
+            // static_cast<float>(gvars.window.height)
+            constexpr float x = 622, y = 241;
+            const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
+            const float yy = (static_cast<float>(gvars.window.height) - y) / 2;
+
+            draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { xx, yy }, { xx + x, yy + y });
+
+
+
+            //draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { 50, 50 }, { 50 + x, 50 + y });
+
+
+        }
+
+        case 1: {
+
+
+        }
+
+        case 2: {
+            return;
+        }
+        
+    }
 }
 
 
@@ -44,14 +73,12 @@ ImColor get_fade_color(ImVec2 pos1, ImVec2 pos2, ImColor col1, ImColor col2, Fad
     float t = state.hover_timer / state.anim_duration; // Normalize the timer
 
     // Interpolate between col1 and col2 based on t
-    ImVec4 lerpColor = ImVec4(
+    ImColor color = ImColor(
         ImLerp(col1.Value.x, col2.Value.x, t),
         ImLerp(col1.Value.y, col2.Value.y, t),
         ImLerp(col1.Value.z, col2.Value.z, t),
         ImLerp(col1.Value.w, col2.Value.w, t)
     );
-
-    ImU32 color = ImGui::ColorConvertFloat4ToU32(lerpColor);
 
     return color;
 }
@@ -64,11 +91,11 @@ void user_interface_t::draw_exit_button() {
     static FadeAnimationState state1;
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
-    draw->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), get_fade_color(pos, { pos.x + size.x, pos.y + size.y }, ImColor(0, 0, 0), ImColor(255, 0, 0), state1));
+    draw->AddRectFilled(pos, ImVec2(pos.x + size.x, pos.y + size.y), get_fade_color(pos, { pos.x + size.x, pos.y + size.y }, ImColor(255, 0, 0, 0), ImColor(255, 0, 0, 255), state1));
 
-    ImGui::SetWindowFontScale(2.f);
+    ImGui::PushFont(gvars.textures.fonts[20]);
     draw->AddText({ pos.x + 5, pos.y - 3 }, ImColor(255, 255, 255), "x");
-    ImGui::SetWindowFontScale(1.f);
+    ImGui::PopFont();
 
     if (ImGui::IsMouseHoveringRect(pos, { pos.x + size.x, pos.y + size.y }))
         if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -90,18 +117,25 @@ void user_interface_t::draw_window_title() {
 
 }
 
-// draws the titlebar and outline around the window
-void user_interface_t::draw_titlebar() {
+// draws the titlebar and outline around it + around the window
+void user_interface_t::draw_overlay() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
 
-    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), 25 }, ImColor(60, 60, 60));
-    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, ImColor(60, 60, 60));
+    ImColor background = ImColor(30, 30, 30);
+    ImColor outline = ImColor(150, 150, 150);
+
+    // background
+    draw->AddRectFilled({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, background);
+    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), 25 }, outline);
+    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, outline);
 
 }
 
 
 void user_interface_t::do_draw() noexcept {
+
+    ImGui::PushFont(gvars.textures.fonts[14]);
 
     ImGui::StyleColorsDarkC();
 
@@ -116,12 +150,15 @@ void user_interface_t::do_draw() noexcept {
         ImGuiStyle* style = &ImGui::GetStyle();
         ImVec4* colors = style->Colors;
 
+        draw_overlay();
         draw_exit_button();
         draw_window_title();
-        draw_titlebar();
+        draw_intro_logo();
         
     }
 
     ImGui::End();
+
+    ImGui::PopFont();
 
 }

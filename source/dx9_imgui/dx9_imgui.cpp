@@ -3,6 +3,10 @@
 #include <string>
 #include <vector>
 
+#include "../../byte_array/_bitwise.h"
+#include "../../byte_array/whitrabt.h"
+#include "../../byte_array/_springtime.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
@@ -144,6 +148,23 @@ void gui::create_imgui() noexcept {
 
 	ImFontConfig font_config;
 	font_config.FontDataOwnedByAtlas = false;
+
+	for (int i = 0; i < 24; ++i) {
+		gvars.textures.fonts.push_back(ImGui::GetIO().Fonts->AddFontFromMemoryTTF((void*)font::whiterabbit, sizeof(font::whiterabbit), i, &font_config));
+	}
+
+	HRESULT hr_csgo_logo = D3DXCreateTextureFromFileInMemory(dx9::device, &image::springtime, sizeof(image::springtime), &gvars.textures.images[gvars.textures.Image_springtime]);
+	HRESULT hr_smoke_pic = D3DXCreateTextureFromFileInMemory(dx9::device, &image::bitwise, sizeof(image::bitwise), &gvars.textures.images[gvars.textures.Image_bitwise]);
+
+	ImGui::StyleColorsDarkC();
+
+	if (FAILED(hr_csgo_logo)) {
+		gvars.textures.images[gvars.textures.Image_springtime] = nullptr;
+	}
+	if (FAILED(hr_smoke_pic)) {
+		gvars.textures.images[gvars.textures.Image_bitwise] = nullptr;
+	}
+
 }
 
 void gui::destroy_imgui() noexcept {
