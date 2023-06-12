@@ -153,6 +153,7 @@
     <ClInclude Include="byte_array\whitrabt.h" />
     <ClInclude Include="byte_array\_bitwise.h" />
     <ClInclude Include="byte_array\_springtime.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="source\dx9_imgui\dx9_imgui.hpp" />
     <ClInclude Include="source\dx9_imgui\imgui\imconfig.h" />
     <ClInclude Include="source\dx9_imgui\imgui\imgui.h" />
@@ -165,6 +166,15 @@
     <ClInclude Include="source\dx9_imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="source\globals\globals.hpp" />
     <ClInclude Include="source\user_interface\user_interface.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="idle-game-project.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Downloads\bw.ico" />
+    <Image Include="..\..\..\Downloads\icon-removebg-preview.png" />
+    <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
