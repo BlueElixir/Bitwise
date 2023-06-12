@@ -7,6 +7,7 @@ private: float anim_duration = 0.8f;
 private: float stay_duration1 = 3.f;
 private: float stay_duration2 = 2.f;
 private: float anim_timer = 0.f;
+
 private: void draw_intro_logo();
 private: void draw_exit_button();
 private: void draw_window_title();

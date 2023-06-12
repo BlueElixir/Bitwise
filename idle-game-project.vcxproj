@@ -146,6 +146,7 @@
     <ClCompile Include="source\dx9_imgui\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="source\dx9_imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="source\dx9_imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="source\game_manager\game_manager.cpp" />
     <ClCompile Include="source\globals\globals.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\user_interface\user_interface.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="source\dx9_imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="source\dx9_imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="source\dx9_imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="source\game_manager\game_manager.hpp" />
     <ClInclude Include="source\globals\globals.hpp" />
     <ClInclude Include="source\user_interface\user_interface.hpp" />
   </ItemGroup>
