@@ -7,6 +7,8 @@
 #include "../globals/globals.hpp"
 #include "../dx9_imgui/imgui/imgui_internal.h"
 
+#include <string>
+
 user_interface_t user_interface;
 // perform rendering tasks
 
@@ -15,35 +17,107 @@ void user_interface_t::draw_intro_logo() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
 
-    switch (this->intro_state) {
+ 
+    if (this->intro_state == 0) {
 
-        case 0: {
-
-            // static_cast<float>(gvars.window.width)
-            // static_cast<float>(gvars.window.height)
-            constexpr float x = 622, y = 241;
-            const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
-            const float yy = (static_cast<float>(gvars.window.height) - y) / 2;
-
-            draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { xx, yy }, { xx + x, yy + y });
+        // static_cast<float>(gvars.window.width)
+        // static_cast<float>(gvars.window.height)
+        constexpr float x = 622, y = 241;
+        const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
+        const float yy = (static_cast<float>(gvars.window.height) - y) / 2;
 
 
+        ImGuiIO& io = ImGui::GetIO();
+        ImColor color = ImColor(255, 255, 255, 0);
 
-            //draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { 50, 50 }, { 50 + x, 50 + y });
 
+        this->anim_timer += io.DeltaTime;
+        this->anim_timer = ImClamp(this->anim_timer, 0.0f, this->anim_duration * 2 + this->stay_duration1);
+
+        static float first = 0.f;
+        static float second = 0.f;
+
+        if (this->anim_timer < this->anim_duration) {
+
+            first += io.DeltaTime;
+
+            color = ImColor(255, 255, 255, ImLerp(0, 255, first / this->anim_duration));
+
+        }
+        else if ((this->anim_timer >= this->anim_duration) && (this->anim_timer < (this->anim_duration + this->stay_duration1)))
+        {
+
+            color = ImColor(255, 255, 255, 255);
+
+        }
+        else if ((this->anim_timer >= this->anim_duration + this->stay_duration1) && (this->anim_timer < (this->anim_duration * 2 + this->stay_duration1))) {
+
+            second += io.DeltaTime;
+
+            color = ImColor(255, 255, 255, ImLerp(255, 0, second / this->anim_duration));
 
         }
 
-        case 1: {
+        draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
+        draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
+        draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
+        draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { xx, yy }, { xx + x, yy + y }, { 0, 0 }, { 1, 1 }, color);
 
 
+        //draw->AddImage(gvars.textures.images[gvars.textures.Image_springtime], { 50, 50 }, { 50 + x, 50 + y });
+
+        if (this->anim_timer == 4.6f) {
+            this->intro_state = 1;
+            this->anim_timer = 0.f;
         }
+            
 
-        case 2: {
-            return;
-        }
-        
     }
+    else {
+
+        constexpr float x = 441, y = 131;
+        const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
+        const float yy = (static_cast<float>(gvars.window.height) - y) / 2;
+
+        ImGuiIO& io = ImGui::GetIO();
+        ImColor color = ImColor(255, 255, 255, 0);
+
+
+        this->anim_timer += io.DeltaTime;
+        this->anim_timer = ImClamp(this->anim_timer, 0.0f, this->anim_duration * 2 + this->stay_duration2);
+
+        static float first = 0.f;
+        static float second = 0.f;
+
+        if (this->anim_timer < this->anim_duration) {
+
+            first += io.DeltaTime;
+
+            color = ImColor(255, 255, 255, ImLerp(0, 255, first / this->anim_duration));
+
+        }
+        else if ((this->anim_timer >= this->anim_duration) && (this->anim_timer < (this->anim_duration + this->stay_duration2)))
+        {
+
+            color = ImColor(255, 255, 255, 255);
+
+        }
+        else if ((this->anim_timer >= this->anim_duration + this->stay_duration2) && (this->anim_timer < (this->anim_duration * 2 + this->stay_duration2))) {
+
+            second += io.DeltaTime;
+
+            color = ImColor(255, 255, 255, ImLerp(255, 0, second / this->anim_duration));
+
+        }
+
+        draw->AddText({ 20, 50 }, ImColor(255, 255, 255), std::string("timer: " + std::to_string(this->anim_timer)).c_str());
+        draw->AddText({ 20, 70 }, ImColor(255, 255, 255), std::string("first: " + std::to_string(first)).c_str());
+        draw->AddText({ 20, 90 }, ImColor(255, 255, 255), std::string("secnd: " + std::to_string(second)).c_str());
+
+        draw->AddImage(gvars.textures.images[gvars.textures.Image_bitwise], { xx, yy }, { xx + x, yy + y }, { 0, 0 }, { 1, 1 }, color);
+
+    }
+
 }
 
 
