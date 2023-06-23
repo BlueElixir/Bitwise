@@ -4,6 +4,8 @@
 #include <Lmcons.h>
 #include <string>
 #include <sstream>
+#include <time.h>
+#include <iostream>
 
 #include "../dx9_imgui/dx9_imgui.hpp"
 #include "../globals/globals.hpp"
@@ -15,30 +17,7 @@ void game_manager_t::init() {
 	dx9::create_device();
 	gui::create_imgui();
 
-	char username[UNLEN + 1];
-	DWORD usernameSize = UNLEN + 1;
-	GetUserName(username, &usernameSize);
-
-	// Construct the file path
-	std::string config_file_path = "C:\\Users\\";
-	config_file_path += username;
-	config_file_path += "\\AppData\\Roaming\\Bitwise";
-
-	// Create the Bitwise directory
-	CreateDirectory(config_file_path.c_str(), nullptr);
-
-	// Append the file name to the file path
-	config_file_path += "\\savefile.json";
-
-	// Check if the file exists
-	if (GetFileAttributes(config_file_path.c_str()) == INVALID_FILE_ATTRIBUTES) {
-		// The file does not exist, create it
-		std::ofstream file(config_file_path);
-		if (file.is_open()) {
-			file << "";
-			file.close();
-		}
-	}
+	this->create_config();
 
 }
 
@@ -62,65 +41,73 @@ void game_manager_t::end() {
 
 }
 
-void game_manager_t::read_config_file(std::vector<std::vector<std::string>>& config, std::string file_name) {
-	std::ifstream config_file(file_name);
+void game_manager_t::create_config() {
 
-	std::string line;
-	size_t i{ 0 };
-	while (std::getline(config_file, line)) {
+	this->config["player"]["name"] = "bob knob";
+	config["player"]["currency"] = {
+		{ "name", "Bit" },
+		{ "amount", 100 }
+	};
 
-		if (i == 0 && line != "config_version=1") {
-			throw std::runtime_error(std::string("invalid configuration. add \"config_version=1\" to the top of the config"));
+	this->config["upgrades"] = {
+		{
+			{ "name", "Efficient Worker" },
+			{ "internal_name", "speed" },
+			{ "level", 2 }
+		},
+		{
+			{ "name", "Powerful Strikes" },
+			{ "internal_name", "damage" },
+			{ "level", 1 }
 		}
-		else if (i == 0 && line == "config_version=1") {
-			++i;
-			continue;
-		}
+	};
 
-		std::stringstream ss(line);
-		std::string sub, sub2;
-		int j{ 0 };
+	this->config["games_completed"] = {
+		{ "coding", 3 },
+		{ "reviewing", 5 }
+	};
 
-		while (std::getline(ss, sub, ':') && j < 3) {
-			config[j].push_back(sub);
-			++j;
-		}
-		if (ss.peek() == ':') {
-			ss.ignore();
-		}
-		std::getline(ss, sub2);
-		//config[notes].push_back(sub + sub2);
+	this->config["last_save_time"] = std::time(nullptr);
 
+
+	CreateDirectory(config_folder_path.c_str(), nullptr);
+
+	if (GetFileAttributes(config_file_path.c_str()) == INVALID_FILE_ATTRIBUTES) {
+		this->write_config(this->config, this->config_file_path);
+	}
+	else {
+		this->config = this->read_config(this->config_file_path);
 	}
 
-	config_file.close();
 }
 
-void game_manager_t::write_config_file(std::vector<std::vector<std::string>>& config, std::string file_name) {
+json game_manager_t::read_config(const std::string& filename) {
 
-	wchar_t username[UNLEN + 1];
-	DWORD usernameSize = UNLEN + 1;
-	GetUserNameW(username, &usernameSize);
+	std::ifstream file(filename);
+	if (file.is_open()) {
+		json config;
+		file >> config;
+		file.close();
+		return config;
+	}
+	else {
+		return json();
+	}
 
-	// Construct the file path
-	std::wstring filePath = L"C:\\Users\\";
-	filePath += username;
-	filePath += L"\\AppData\\Roaming\\Bitwise";
+}
 
-	// Create the Bitwise directory
-	CreateDirectoryW(filePath.c_str(), nullptr);
+void game_manager_t::write_config(const json& config, const std::string& filename) {
 
-	// Append the file name to the file path
-	filePath += L"\\runtime.cfg";
+	std::ofstream file(filename);
+	if (file.is_open()) {
 
-	// Check if the file exists
-	if (GetFileAttributesW(filePath.c_str()) == INVALID_FILE_ATTRIBUTES) {
-		// The file does not exist, create it
-		std::ofstream file(filePath);
-		if (file.is_open()) {
-			file << "";
-			file.close();
-		}
+		file << std::setw(4) << config;
+		file.close();
+		std::cout << "Configuration saved successfully." << std::endl;
+
+	}
+	else {
+		std::cerr << "Unable to save configuration." << std::endl;
 	}
 
 }

@@ -1,24 +1,24 @@
 #include "currency.hpp"
 
-currency_t::currency_t(int amount = 0, std::string name = "") {
+currency_t::currency_t(int amount, std::string name) {
 	this->amount = amount;
 	this->name = name;
 }
 
-void currency_t::add(int amount = 1) {
+void currency_t::add(int amount) {
 
 	this->amount += amount;
 
 }
 
-void currency_t::remove(int amount = 1) {
+void currency_t::remove(int amount) {
 
 	if (this->amount - amount >= 0)
 		this->amount -= amount;
 
 }
 
-void currency_t::set(int amount = 0) {
+void currency_t::set(int amount) {
 
 	this->amount = amount;
 

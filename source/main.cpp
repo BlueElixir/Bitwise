@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include "game_manager/game_manager.hpp"
 
-//#define DEBUG
+#define DEBUG
 #ifdef DEBUG
 int main() {
 #else

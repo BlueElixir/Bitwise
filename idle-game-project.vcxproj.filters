@@ -119,6 +119,9 @@
     <ClInclude Include="source\currency\currency.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="idle-game-project.rc">
