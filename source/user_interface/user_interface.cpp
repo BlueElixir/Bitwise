@@ -121,7 +121,6 @@ void user_interface_t::draw_intro_logo() {
 
 }
 
-
 struct FadeAnimationState {
     bool is_hovered = false;
     float hover_timer = 0.0f;
@@ -208,6 +207,19 @@ void user_interface_t::draw_overlay() {
 
 }
 
+//#define skip_intro // comment this line out if you don't want to skip
+
+void user_interface_t::draw_title_screen() {
+
+    ImDrawList* draw = ImGui::GetBackgroundDrawList();
+
+    ImVec2 button_size = { 250.f, 60.f };
+    ImVec2 play_button = { (gvars.window.width - button_size.x) / 2, (gvars.window.height - button_size.y) * 0.35f };
+
+    draw->AddRectFilled(play_button, { play_button.x + button_size.x, play_button.y + button_size.y }, ImColor(255, 255, 255));
+
+}
+
 
 void user_interface_t::do_draw() noexcept {
 
@@ -229,7 +241,15 @@ void user_interface_t::do_draw() noexcept {
         draw_overlay();
         draw_exit_button();
         draw_window_title();
-        draw_intro_logo();
+
+#ifdef skip_intro
+        this->intro_state = 2;
+#endif
+
+        if (this->intro_state < 2)
+            draw_intro_logo();
+        else
+            draw_title_screen();
         
     }
 
