@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\currency\currency.cpp" />
     <ClCompile Include="source\dx9_imgui\dx9_imgui.cpp" />
     <ClCompile Include="source\dx9_imgui\imgui\imgui.cpp" />
     <ClCompile Include="source\dx9_imgui\imgui\imgui_demo.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="source\game_manager\game_manager.cpp" />
     <ClCompile Include="source\globals\globals.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\player\player.cpp" />
     <ClCompile Include="source\user_interface\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +158,7 @@
     <ClInclude Include="byte_array\_bitwise.h" />
     <ClInclude Include="byte_array\_springtime.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="source\currency\currency.hpp" />
     <ClInclude Include="source\dx9_imgui\dx9_imgui.hpp" />
     <ClInclude Include="source\dx9_imgui\imgui\imconfig.h" />
     <ClInclude Include="source\dx9_imgui\imgui\imgui.h" />
@@ -168,6 +171,7 @@
     <ClInclude Include="source\dx9_imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="source\game_manager\game_manager.hpp" />
     <ClInclude Include="source\globals\globals.hpp" />
+    <ClInclude Include="source\player\player.hpp" />
     <ClInclude Include="source\user_interface\user_interface.hpp" />
   </ItemGroup>
   <ItemGroup>
