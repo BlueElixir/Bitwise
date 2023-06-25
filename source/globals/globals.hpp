@@ -15,13 +15,13 @@ struct globals_t {
 	struct states_t {
 
 		bool should_exit = false; // set to true when you want to close program
+		float curtime = 0.f; // stores time since game start
 
 	} states;
 
 	struct user_interface_t {
 
-		int active_image = 0;
-		bool changed = false;
+		bool resolution_changed = false;
 
 	} ui;
 
@@ -34,9 +34,17 @@ struct globals_t {
 		};
 
 		std::vector<LPDIRECT3DTEXTURE9> images = { nullptr, nullptr };
+		// max font size: 50, array size 51
 		std::vector<ImFont*> fonts;
 
 	} textures;
+
+	struct config_t {
+
+		std::string file_path{ "C:\\Games\\Bitwise\\savefile.json" };
+		std::string folder_path{ "C:\\Games\\Bitwise" };
+
+	} config;
 
 };
 

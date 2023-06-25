@@ -10,6 +10,8 @@
 #include "../dx9_imgui/dx9_imgui.hpp"
 #include "../globals/globals.hpp"
 #include "../user_interface/user_interface.hpp"
+#include "../dx9_imgui/imgui/imgui_impl_dx9.h"
+#include "../dx9_imgui/imgui/imgui_impl_win32.h"
 
 void game_manager_t::init() {
 
@@ -23,7 +25,21 @@ void game_manager_t::init() {
 
 void game_manager_t::run_loop() {
 
+	ImGuiIO& io = ImGui::GetIO();
+
 	while (!gvars.states.should_exit && IsWindow(dx9::window)) {
+
+		/*if (gvars.ui.resolution_changed) {
+
+			dx9::destroy_window();
+			gui::destroy_imgui();
+
+			dx9::create_window("Bitwise - Idle Game", "bitwise_class");
+			gui::create_imgui();
+			
+
+			gvars.ui.resolution_changed = false;
+		}*/
 
 		gui::begin_render();
 		user_interface.do_draw();
@@ -43,41 +59,65 @@ void game_manager_t::end() {
 
 void game_manager_t::create_config() {
 
-	this->config["player"]["name"] = "bob knob";
-	config["player"]["currency"] = {
-		{ "name", "Bit" },
-		{ "amount", 100 }
+	json default_config;
+	default_config["currency"] = {
+		{ "name", "Bits" },
+		{ "amount", 100.f }
 	};
 
-	this->config["upgrades"] = {
-		{
-			{ "name", "Efficient Worker" },
-			{ "internal_name", "speed" },
-			{ "level", 2 }
-		},
-		{
-			{ "name", "Powerful Strikes" },
-			{ "internal_name", "damage" },
-			{ "level", 1 }
-		}
-	};
-
-	this->config["games_completed"] = {
-		{ "coding", 3 },
-		{ "reviewing", 5 }
-	};
-
-	this->config["last_save_time"] = std::time(nullptr);
-
-
-	CreateDirectory(config_folder_path.c_str(), nullptr);
-
-	if (GetFileAttributes(config_file_path.c_str()) == INVALID_FILE_ATTRIBUTES) {
-		this->write_config(this->config, this->config_file_path);
+	default_config["upgrades"] = {
+	{
+		{ "name", "New CPU" },
+		{ "description", "Increases manual programming speed."},
+		{ "internal_name", "" },
+		{ "level", 0.f },
+		{ "increment", 0.2f },
+		{ "base_price", 10.f },
+		{ "price_modifier", 1.618f }
+	},
+	{
+		{ "name", "Better IDE Font" },
+		{ "description", "Increases Code Quality"},
+		{ "internal_name", "" },
+		{ "level", 0.f },
+		{ "increment", 0.1f },
+		{ "base_price", 2000.f },
+		{ "price_modifier", 2.415f }
+	},
+	{
+		{ "name", "Monitor Resolution" },
+		{ "description", "Increases manual reviewing speed."},
+		{ "internal_name", "" },
+		{ "level", 0.f },
+		{ "increment", 0.2f },
+		{ "base_price", 20.f },
+		{ "price_modifier", 1.818f }
+	},
+	{
+		{ "name", "Daylight Savings Time" },
+		{ "description", "Time advances more quickly."},
+		{ "internal_name", "" },
+		{ "level", 0.f },
+		{ "increment", 0.2f },
+		{ "base_price", 400.f },
+		{ "price_modifier", 3.14f }
 	}
-	else {
-		this->config = this->read_config(this->config_file_path);
-	}
+	};
+
+	default_config["games_completed"] = {
+		{ "coding", 0 },
+		{ "reviewing", 0 }
+	};
+
+	default_config["last_save_time"] = std::time(nullptr);
+
+
+	CreateDirectory(gvars.config.folder_path.c_str(), nullptr);
+
+	this->config = this->read_config(gvars.config.file_path);
+
+	if (this->config == nullptr)
+		this->write_config(default_config, gvars.config.file_path);
 
 }
 
@@ -91,7 +131,7 @@ json game_manager_t::read_config(const std::string& filename) {
 		return config;
 	}
 	else {
-		return json();
+		return nullptr;
 	}
 
 }

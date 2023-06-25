@@ -23,6 +23,8 @@ namespace dx9 {
 	void reset_device() noexcept;
 	void destroy_device() noexcept;
 
+	void resize_window(int new_width, int new_height);
+
 };
 
 namespace gui {
@@ -31,7 +33,6 @@ namespace gui {
 	void destroy_imgui() noexcept;
 
 	void begin_render() noexcept;
-	void render() noexcept;
 	void end_render() noexcept;
 
 }

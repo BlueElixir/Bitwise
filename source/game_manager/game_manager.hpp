@@ -8,9 +8,7 @@ using json = nlohmann::json;
 
 class game_manager_t {
 
-private: std::string config_file_path{ "C:\\Games\\Bitwise\\savefile.json" };
-private: std::string config_folder_path{ "C:\\Games\\Bitwise" };
-private: json config;
+public: json config;
 
 public: void init();
 public: void run_loop();

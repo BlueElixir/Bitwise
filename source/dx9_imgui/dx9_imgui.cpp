@@ -13,6 +13,7 @@
 #include "imgui/imgui_stdlib.h"
 
 #include "../globals/globals.hpp"
+#include "../game_manager/game_manager.hpp"
 
 #include "../../resource.h"
 
@@ -144,6 +145,10 @@ void dx9::destroy_device() noexcept {
 	}
 }
 
+void dx9::resize_window(int new_width, int new_height) {
+	SetWindowPos(window, nullptr, 0, 0, new_width, new_height, SWP_NOMOVE | SWP_NOZORDER);
+}
+
 void gui::create_imgui() noexcept {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -154,25 +159,29 @@ void gui::create_imgui() noexcept {
 	ImGui_ImplWin32_Init(dx9::window);
 	ImGui_ImplDX9_Init(dx9::device);
 
-	ImFontConfig font_config;
-	font_config.FontDataOwnedByAtlas = false;
-
-	for (int i = 0; i < 24; ++i) {
-		gvars.textures.fonts.push_back(ImGui::GetIO().Fonts->AddFontFromMemoryTTF((void*)font::whiterabbit, sizeof(font::whiterabbit), i, &font_config));
-	}
-
-	HRESULT hr_csgo_logo = D3DXCreateTextureFromFileInMemory(dx9::device, &image::springtime, sizeof(image::springtime), &gvars.textures.images[gvars.textures.Image_springtime]);
-	HRESULT hr_smoke_pic = D3DXCreateTextureFromFileInMemory(dx9::device, &image::bitwise, sizeof(image::bitwise), &gvars.textures.images[gvars.textures.Image_bitwise]);
-
 	ImGui::StyleColorsDarkC();
 
-	if (FAILED(hr_csgo_logo)) {
-		gvars.textures.images[gvars.textures.Image_springtime] = nullptr;
-	}
-	if (FAILED(hr_smoke_pic)) {
-		gvars.textures.images[gvars.textures.Image_bitwise] = nullptr;
-	}
+	static bool runonce = true;
 
+	if (runonce) {
+
+		ImFontConfig font_config;
+		font_config.FontDataOwnedByAtlas = false;
+
+		for (int i = 0; i < 51; ++i) {
+			gvars.textures.fonts.push_back(ImGui::GetIO().Fonts->AddFontFromMemoryTTF((void*)font::whiterabbit, sizeof(font::whiterabbit), i, &font_config));
+		}
+
+		HRESULT l1 = D3DXCreateTextureFromFileInMemory(dx9::device, &image::springtime, sizeof(image::springtime), &gvars.textures.images[gvars.textures.Image_springtime]);
+		HRESULT l2 = D3DXCreateTextureFromFileInMemory(dx9::device, &image::bitwise, sizeof(image::bitwise), &gvars.textures.images[gvars.textures.Image_bitwise]);
+
+		if (FAILED(l1)) {
+			gvars.textures.images[gvars.textures.Image_springtime] = nullptr;
+		}
+		if (FAILED(l2)) {
+			gvars.textures.images[gvars.textures.Image_bitwise] = nullptr;
+		}
+	}
 }
 
 void gui::destroy_imgui() noexcept {

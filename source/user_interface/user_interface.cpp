@@ -6,7 +6,9 @@
 #include "../dx9_imgui/imgui/imgui_stdlib.h"
 #include "../globals/globals.hpp"
 #include "../dx9_imgui/imgui/imgui_internal.h"
+#include "../game_manager/game_manager.hpp"
 
+#include <filesystem>
 #include <string>
 
 user_interface_t user_interface;
@@ -177,13 +179,6 @@ void user_interface_t::draw_exit_button() {
 
 }
 
-
-
-
-
-
-
-
 void user_interface_t::draw_window_title() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
@@ -196,35 +191,245 @@ void user_interface_t::draw_window_title() {
 void user_interface_t::draw_overlay() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
+    ImDrawList* draw_fg = ImGui::GetForegroundDrawList();
 
     ImColor background = ImColor(30, 30, 30);
     ImColor outline = ImColor(150, 150, 150);
 
     // background
     draw->AddRectFilled({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, background);
-    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), 25 }, outline);
-    draw->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, outline);
+    draw_fg->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), 25 }, outline);
+    draw_fg->AddRect({ 0, 0 }, { static_cast<float>(gvars.window.width), static_cast<float>(gvars.window.height) }, outline);
 
 }
 
-//#define skip_intro // comment this line out if you don't want to skip
+void user_interface_t::draw_stripes() {
+
+    ImDrawList* draw = ImGui::GetBackgroundDrawList();
+    ImGuiIO& io = ImGui::GetIO();
+
+    static float test = 0;
+    test += io.DeltaTime;
+
+    if (test >= 2.5f)
+        test = 0.f;
+
+    for (float i = 0.f; i < gvars.window.width * 1.5; ++i) {
+
+        draw->AddLine({ i * 25 + test * 10, 25 }, { 0, 25 + i * 25 + test * 10 }, ImColor(30, 85, 125, 150), 2.f);
+
+    }
+
+}
 
 void user_interface_t::draw_title_screen() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
 
-    ImVec2 button_size = { 250.f, 60.f };
-    ImVec2 play_button = { (gvars.window.width - button_size.x) / 2, (gvars.window.height - button_size.y) * 0.35f };
+    constexpr float x = 441, y = 131;
+    const float xx = (static_cast<float>(gvars.window.width) - x) / 2;
+    const float yy = (static_cast<float>(gvars.window.height) - y) / 2 - y;
+    draw->AddImage(gvars.textures.images[gvars.textures.Image_bitwise], { xx, yy }, { xx + x, yy + y }, { 0, 0 }, { 1, 1 }, ImColor(255, 255, 255, 255));
 
-    draw->AddRectFilled(play_button, { play_button.x + button_size.x, play_button.y + button_size.y }, ImColor(255, 255, 255));
+
+
+    ImVec2 button_size = { 250.f, 50.f };
+    ImVec2 play_button = { (gvars.window.width - button_size.x) / 2, (gvars.window.height - button_size.y) * 0.55f };
+
+    ImGui::PushFont(gvars.textures.fonts[30]);
+
+    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 170, 255, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(70, 180, 255, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(50, 150, 230, 255));
+
+    ImGui::SetCursorPos(play_button);
+    if (ImGui::Button("Play", button_size))
+        this->intro_state = 4;
+
+    ImGui::SetCursorPos({ play_button.x, play_button.y + button_size.y * 1.2f });
+    if (ImGui::Button("Settings", button_size))
+        this->intro_state = 3;
+
+    ImGui::SetCursorPos({ play_button.x, play_button.y + button_size.y * 2.4f });
+    if (ImGui::Button("Quit", button_size))
+        gvars.states.should_exit = true;
+
+    ImGui::PopFont();
 
 }
 
+void user_interface_t::draw_settings_screen() {
+
+    std::vector<int> res_w = { 960, 1280, 1360, 1536, 1920, 2560 };
+    std::vector<int> res_h = { 540, 720, 768, 864, 1080, 1440 };
+
+    std::vector<std::string> resolutions = {
+        "960x540",
+        "1280x720",
+        "1360x768",
+        "1536x864",
+        "1920x1080",
+        "2560x1440",
+    };
+
+    enum resolutions {
+        res_960x540   = 0,
+        res_1280x720  = 1,
+        res_1360x768  = 2,
+        res_1536x864  = 3,
+        res_1920x1080 = 4,
+        res_2560x1440 = 5,
+    };
+
+    static std::string current_resolution = resolutions[res_1360x768];
+
+
+    ImGui::SetCursorPos({ 100, 100 });
+    //ImGui::BeginChild("john", { 500, 500 }, true, ImGuiWindowFlags_NoBackground);
+
+    //if (ImGui::BeginCombo("##combo", current_resolution.c_str())) { // The second parameter is the label previewed before opening the combo.
+
+    //    for (int n = 0; n < resolutions.size(); ++n) {
+
+    //        bool is_selected = (current_resolution == resolutions[n]); // You can store your selection however you want, outside or inside your objects
+
+    //        if (ImGui::Selectable(resolutions[n].c_str(), is_selected)) {
+    //            current_resolution = resolutions[n];
+
+    //            gvars.window.width = res_w[n];
+    //            gvars.window.height = res_h[n];
+    //            gvars.ui.resolution_changed = true;
+    //            //dx9::resize_window(res_w[n], res_h[n]);
+    //        }
+
+    //        if (is_selected)
+    //            ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+
+    //    }
+
+    //    ImGui::EndCombo();
+    //}
+
+    ImGui::PushFont(gvars.textures.fonts[50]);
+    ImGui::Text("Under construction,\ncheck back later!");
+
+    ImGui::SetCursorPos({ 100, 500 });
+    if (ImGui::Button("Back", { 300.f, 60.f }))
+        this->intro_state = 2;
+
+    ImGui::PopFont();
+
+    //ImGui::EndChild();
+
+}
+
+void user_interface_t::draw_play_screen() {
+
+    ImDrawList* draw = ImGui::GetBackgroundDrawList();
+
+    ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(60, 170, 255, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(70, 180, 255, 255));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(50, 150, 230, 255));
+
+
+    ImGui::SetCursorPos({ gvars.window.width * 0.125f, gvars.window.height * 0.15f });
+    ImGui::BeginChild("PlayLeft", { gvars.window.width * 0.35f, gvars.window.height * 0.72f }, true);
+
+    ImGui::PushFont(gvars.textures.fonts[30]);
+    ImGui::Spacing(); ImGui::Spacing();
+    ImGui::SetCursorPosX((gvars.window.width * 0.35f - ImGui::CalcTextSize("New Game").x) / 2);
+    ImGui::Text("New Game");
+    ImGui::PopFont();
+    ImGui::Spacing(); ImGui::Spacing();
+    ImGui::SetCursorPosX((gvars.window.width * 0.35f - ImGui::CalcTextSize("Start a fresh game of Bitwise.").x) / 2);
+    ImGui::TextWrapped("Start a fresh game of Bitwise.");
+
+    ImGui::SetCursorPosY(gvars.window.height * 0.72f - 40.f);
+
+    if (ImGui::Button("Start Game!", { gvars.window.width * 0.3385f, 30.f })) {
+        this->intro_state = 5;
+    }
+
+    ImGui::EndChild();
+
+    ImGui::SetCursorPos({ gvars.window.width * 0.525f, gvars.window.height * 0.15f });
+    ImGui::BeginChild("PlayRight", { gvars.window.width * 0.35f, gvars.window.height * 0.72f }, true);
+
+    ImGui::PushFont(gvars.textures.fonts[30]);
+    ImGui::Spacing(); ImGui::Spacing();
+    ImGui::SetCursorPosX((gvars.window.width * 0.35f - ImGui::CalcTextSize("Load Save").x) / 2);
+    ImGui::Text("Load Save");
+    ImGui::PopFont();
+    ImGui::Spacing(); ImGui::Spacing();
+    ImGui::SetCursorPosX((gvars.window.width * 0.35f - ImGui::CalcTextSize("Load a previous savegame of Bitwise.").x) / 2);
+    ImGui::TextWrapped("Load a previous savegame of Bitwise.");
+
+    if (std::filesystem::exists(gvars.config.file_path)) {
+
+        ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+        try {
+            ImGui::Text(std::string(game_manager.config["currency"]["name"].get<std::string>() + " collected: " + game_manager.config["currency"]["amount"].dump()).c_str());
+        }
+        catch (std::exception e) {
+            game_manager.create_config();
+        }
+        //ImGui::Text(std::string().c_str());
+
+    }
+
+    ImGui::SetCursorPosY(gvars.window.height * 0.72f / 2);
+
+    if (!std::filesystem::exists(gvars.config.file_path)) {
+
+        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(50, 50, 50, 255));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, IM_COL32(50, 50, 50, 255));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(50, 50, 50, 255));
+
+        ImGui::TextWrapped("You don't have a savefile! Create a new\ngame or add a savefile to C:\\Games\\Bitwise!");
+
+    }
+
+    ImGui::SetCursorPosY(gvars.window.height * 0.72f - 40.f);
+    ImGui::Button("Continue!", { gvars.window.width * 0.3385f, 30.f });
+
+    if (!std::filesystem::exists(gvars.config.file_path)) {
+        ImGui::PopStyleColor(3);
+    }
+
+
+    ImGui::EndChild();
+
+    ImGui::PopStyleVar();
+
+}
+
+void user_interface_t::draw_game() {
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    gvars.states.curtime += io.DeltaTime;
+
+    ImGui::SetCursorPos({ 1, 28 });
+    ImGui::BeginChild("GameWindow", { gvars.window.width - 2.f, gvars.window.height - 29.f }, false, ImGuiWindowFlags_NoBackground);
+
+    ImDrawList* draw = ImGui::GetWindowDrawList();
+
+    draw->AddRectFilled({ 4.f, 28.f }, { gvars.window.width - 4.f, 90.f }, ImColor(50, 50, 50, 255), 5.f);
+
+    ImGui::SetCursorPosX(3.f);
+    ImGui::ProgressBar(game_manager.config["currency"]["amount"].get<float>() / 1000000.f, { gvars.window.width - 8.f, 30.f }, std::string(std::to_string((int)(game_manager.config["currency"]["amount"].get<float>() / 1000000.f * 100)) + "%").c_str());
+    
+    ImGui::SetCursorPosX(7.f);
+    ImGui::Text("IAUHJSDGBFDIAGSD");
+
+    ImGui::EndChild();
+
+}
 
 void user_interface_t::do_draw() noexcept {
 
     ImGui::PushFont(gvars.textures.fonts[14]);
-
     ImGui::StyleColorsDarkC();
 
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -242,14 +447,31 @@ void user_interface_t::do_draw() noexcept {
         draw_exit_button();
         draw_window_title();
 
-#ifdef skip_intro
-        this->intro_state = 2;
-#endif
-
-        if (this->intro_state < 2)
+        switch (this->intro_state) {
+        case 0:
+        case 1:
             draw_intro_logo();
-        else
+            break;
+
+        case 2:
+            draw_stripes();
             draw_title_screen();
+            break;
+
+        case 3:
+            draw_stripes();
+            draw_settings_screen();
+            break;
+
+        case 4:
+            draw_stripes();
+            draw_play_screen();
+            break;
+
+        case 5:
+            draw_game();
+            break;
+        }
         
     }
 
