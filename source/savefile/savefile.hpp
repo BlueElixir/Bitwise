@@ -20,10 +20,16 @@ extern savefile_t savefile;
 
 enum upgrades {
 
-	up_newcpu,
-	up_bettercode,
-	up_highres,
-	up_dst,
-	up_idlebits,
+	up_newcpu = 0,
+	up_bettercode = 1,
+	up_highres = 2,
+	up_dst = 3,
+	up_idlebits = 4,
 
+};
+
+enum games {
+	
+	gm_programming = 0,
+	gm_codereviews = 1,
 };

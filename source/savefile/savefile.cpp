@@ -19,17 +19,17 @@ void savefile_t::create_config() {
 		{ "description", "Increases manual programming speed."},
 		{ "internal_name", "newcpu" },
 		{ "level", 0 },
-		{ "increment", 0.2f },
-		{ "base_price", 10.f },
-		{ "price_modifier", 1.618f }
+		{ "increment", 0.05f },
+		{ "base_price", 25.f },
+		{ "price_modifier", 1.5f }
 	},
 	{
 		{ "name", "Increased Code Quality" },
 		{ "description", "Gain more bits per submission."},
 		{ "internal_name", "bettercode" },
 		{ "level", 0 },
-		{ "increment", 0.1f },
-		{ "base_price", 2000.f },
+		{ "increment", 0.33f },
+		{ "base_price", 250.f },
 		{ "price_modifier", 2.415f }
 	},
 	{
@@ -37,33 +37,45 @@ void savefile_t::create_config() {
 		{ "description", "Increases manual reviewing speed."},
 		{ "internal_name", "highres" },
 		{ "level", 0 },
-		{ "increment", 0.2f },
-		{ "base_price", 20.f },
-		{ "price_modifier", 1.818f }
+		{ "increment", 0.05f },
+		{ "base_price", 25.f },
+		{ "price_modifier", 1.5f }
 	},
 	{
 		{ "name", "Daylight Savings Time" },
 		{ "description", "Time advances more quickly."},
 		{ "internal_name", "dst" },
 		{ "level", 0 },
-		{ "increment", 0.2f },
-		{ "base_price", 500.f },
-		{ "price_modifier", 3.14f }
+		{ "increment", 0.0f },
+		{ "base_price", 1000000.f },
+		{ "price_modifier", 0.0f }
 	},
 	{
 		{ "name", "ChatGPT" },
 		{ "description", "Gain bits while completely idle."},
 		{ "internal_name", "idlebits" },
 		{ "level", 0 },
-		{ "increment", 0.2f },
-		{ "base_price", 500.f },
-		{ "price_modifier", 3.14f }
+		{ "increment", 0.5f },
+		{ "base_price", 10.f },
+		{ "price_modifier", 1.314f }
 	}
 	};
 
-	this->config["games_completed"] = {
-		{ "coding", 0 },
-		{ "reviewing", 0 }
+	this->config["games"] = {
+	{
+		{ "name", "Programming" },
+		{ "description", "Write a simple program."},
+		{ "internal_name", "programming" },
+		{ "reward", 10.f },
+		{ "duration", 5.f }
+	},
+	{
+		{ "name", "Code Reviews" },
+		{ "description", "Check out other people's code."},
+		{ "internal_name", "codereviews" },
+		{ "reward", 10.f },
+		{ "duration", 5.f }
+	}
 	};
 
 	this->config["last_save_time"] = std::time(nullptr);
