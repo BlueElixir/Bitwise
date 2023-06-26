@@ -56,7 +56,11 @@ void game_manager_t::end() {
 	dx9::destroy_device();
 	dx9::destroy_window();
 
-	savefile.write_config();
+	if (user_interface.intro_state == 5) {
+		savefile.config["last_save_time"] = std::time(nullptr);;
+		savefile.write_config();
+	}
+		
 
 }
 

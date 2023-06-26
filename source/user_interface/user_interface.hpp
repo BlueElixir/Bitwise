@@ -2,7 +2,7 @@
 
 class user_interface_t {
 
-private: int intro_state = 2;
+public: int intro_state = 2;
 private: float anim_duration = 0.8f;
 private: float stay_duration1 = 3.f;
 private: float stay_duration2 = 2.f;
