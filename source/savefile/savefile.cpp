@@ -10,7 +10,7 @@ void savefile_t::create_config() {
 
 	this->config["currency"] = {
 		{ "name", "Bits" },
-		{ "amount", 0.f }
+		{ "amount", 500.f }
 	};
 
 	this->config["upgrades"] = {
@@ -25,7 +25,7 @@ void savefile_t::create_config() {
 	},
 	{
 		{ "name", "Increased Code Quality" },
-		{ "description", " Gain more bits per submission."},
+		{ "description", "Gain more bits per submission."},
 		{ "internal_name", "bettercode" },
 		{ "level", 0 },
 		{ "increment", 0.1f },
@@ -47,7 +47,16 @@ void savefile_t::create_config() {
 		{ "internal_name", "dst" },
 		{ "level", 0 },
 		{ "increment", 0.2f },
-		{ "base_price", 400.f },
+		{ "base_price", 500.f },
+		{ "price_modifier", 3.14f }
+	},
+	{
+		{ "name", "ChatGPT" },
+		{ "description", "Gain bits while completely idle."},
+		{ "internal_name", "idlebits" },
+		{ "level", 0 },
+		{ "increment", 0.2f },
+		{ "base_price", 500.f },
 		{ "price_modifier", 3.14f }
 	}
 	};

@@ -17,3 +17,13 @@ public: void write_config(json config = nullptr, std::string filename = "");
 };
 
 extern savefile_t savefile;
+
+enum upgrades {
+
+	up_newcpu,
+	up_bettercode,
+	up_highres,
+	up_dst,
+	up_idlebits,
+
+};

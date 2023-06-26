@@ -448,39 +448,66 @@ void user_interface_t::draw_game() {
 
     ImGuiIO& io = ImGui::GetIO();
 
-    gvars.states.curtime += io.DeltaTime + savefile.config["upgrades"].at(3)["level"].get<int>() * savefile.config["upgrades"].at(3)["increment"].get<float>();
+    gvars.states.curtime += io.DeltaTime;
 
     ImGui::SetCursorPos({ 1, 28 });
     ImGui::BeginChild("GameWindow", { gvars.window.width - 2.f, gvars.window.height - 29.f }, false, ImGuiWindowFlags_NoBackground);
 
     ImDrawList* draw = ImGui::GetWindowDrawList();
 
-    draw->AddRectFilled({ 4.f, 28.f }, { gvars.window.width - 4.f, 90.f }, ImColor(50, 50, 50, 255), 5.f);
+    //draw->AddRectFilled({ 4.f, 28.f }, { gvars.window.width - 4.f, 90.f }, ImColor(50, 50, 50, 255), 5.f);
 
     ImGui::SetCursorPosX(3.f);
     ImGui::ProgressBar(savefile.config["currency"]["amount"].get<float>() / 1000000.f, { gvars.window.width - 8.f, 30.f }, std::string(std::to_string((int)(savefile.config["currency"]["amount"].get<float>())) + " | " + std::to_string((int)(savefile.config["currency"]["amount"].get<float>() / 1000000.f * 100)) + "%").c_str());
     
     ImGui::SetCursorPosX(7.f);
-    ImGui::Text(std::to_string(gvars.states.curtime).c_str());
+    ImGui::Text(std::string("Session time: " + std::to_string((int)gvars.states.curtime) + " seconds").c_str());
 
+    savefile.config["currency"]["amount"] = savefile.config["currency"]["amount"].get<float>() + io.DeltaTime + io.DeltaTime * savefile.config["upgrades"].at(up_idlebits)["level"].get<int>() * savefile.config["upgrades"].at(up_idlebits)["increment"].get<float>();
+
+    ImGui::SetCursorPos({ 4.f, 50.f });
+    ImGui::BeginChild("Upgrades", { 300.f, 685.f }, true);
+
+    std::string name = "Upgrades";
+    ImGui::SetCursorPos({ (8.f + 4.f + 300.f - ImGui::CalcTextSize(name.c_str()).x) / 2, 8.f });
+    ImGui::Text(name.c_str());
+
+    ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
     // upgrades
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
 
-        if (ImGui::Button(std::string("Upgrade: " + savefile.config["upgrades"].at(i)["name"].get<std::string>() + " " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>()) + " -> " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>() + 1) + " | " + std::to_string(savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>())) + " Bits").c_str())) {
+        ImGui::Text(savefile.config["upgrades"].at(i)["name"].get<std::string>().c_str());        
+        ImGui::SameLine();
+
+        if (ImGui::Button(std::string("Buy").c_str())) {
 
             if (savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>()) <= savefile.config["currency"]["amount"].get<float>()) {
 
-                savefile.config["currency"]["amount"] = savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>());
+                float temp = savefile.config["currency"]["amount"].get<float>();
+                temp -= savefile.config["upgrades"].at(i)["base_price"].get<float>();
+                temp -= savefile.config["upgrades"].at(i)["base_price"].get<float>() * savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>();
+
+                savefile.config["currency"]["amount"] = temp;
+                savefile.config["upgrades"].at(i)["level"] = savefile.config["upgrades"].at(i)["level"].get<int>() + 1;
 
             }
 
         }
 
+        ImGui::PushFont(gvars.textures.fonts[10]);
+        ImGui::TextWrapped(savefile.config["upgrades"].at(i)["description"].get<std::string>().c_str());
+        ImGui::Text(std::string("Level: " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>()) + " -> " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>() + 1)).c_str());
+        ImGui::Text(std::string("Price: " + std::to_string(savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>()))).c_str());
+        ImGui::PopFont();
+
+        ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
     }
 
+    ImGui::EndChild(); // Upgrades
 
-    ImGui::EndChild();
+    ImGui::EndChild(); // Game window
 
 }
 
