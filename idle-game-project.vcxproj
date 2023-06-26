@@ -151,6 +151,8 @@
     <ClCompile Include="source\globals\globals.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\player\player.cpp" />
+    <ClCompile Include="source\savefile\savefile.cpp" />
+    <ClCompile Include="source\savefile\savefile.hpp" />
     <ClCompile Include="source\user_interface\user_interface.cpp" />
   </ItemGroup>
   <ItemGroup>

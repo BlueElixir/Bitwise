@@ -8,6 +8,8 @@
 #include "../dx9_imgui/imgui/imgui_internal.h"
 #include "../game_manager/game_manager.hpp"
 
+#include "../savefile/savefile.hpp"
+
 #include <filesystem>
 #include <string>
 
@@ -203,6 +205,7 @@ void user_interface_t::draw_overlay() {
 
 }
 
+// also draws game version because why not :D
 void user_interface_t::draw_stripes() {
 
     ImDrawList* draw = ImGui::GetBackgroundDrawList();
@@ -219,6 +222,9 @@ void user_interface_t::draw_stripes() {
         draw->AddLine({ i * 25 + test * 10, 25 }, { 0, 25 + i * 25 + test * 10 }, ImColor(30, 85, 125, 150), 2.f);
 
     }
+
+    draw->AddText({ gvars.window.width - 5 - ImGui::CalcTextSize(gvars.states.game_version.c_str()).x, gvars.window.height - 5 - ImGui::CalcTextSize(gvars.states.game_version.c_str()).y }, ImColor(255, 255, 255), gvars.states.game_version.c_str());
+    draw->AddText({ 5, gvars.window.height - 5 - ImGui::CalcTextSize(gvars.states.developer_str.c_str()).y }, ImColor(255, 255, 255), gvars.states.developer_str.c_str());
 
 }
 
@@ -347,6 +353,7 @@ void user_interface_t::draw_play_screen() {
     ImGui::SetCursorPosY(gvars.window.height * 0.72f - 40.f);
 
     if (ImGui::Button("Start Game!", { gvars.window.width * 0.3385f, 30.f })) {
+        savefile.create_config();
         this->intro_state = 5;
     }
 
@@ -365,18 +372,30 @@ void user_interface_t::draw_play_screen() {
     ImGui::TextWrapped("Load a previous savegame of Bitwise.");
 
     if (std::filesystem::exists(gvars.config.file_path)) {
-
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-        try {
-            ImGui::Text(std::string(game_manager.config["currency"]["name"].get<std::string>() + " collected: " + game_manager.config["currency"]["amount"].dump()).c_str());
-        }
-        catch (std::exception e) {
-            game_manager.create_config();
-        }
-        //ImGui::Text(std::string().c_str());
+        ImGui::Text(std::string(savefile.config["currency"]["name"].get<std::string>() + " collected: " + std::to_string((int)savefile.config["currency"]["amount"].get<float>())).c_str());
+
+        static time_t unixtime = savefile.config["last_save_time"].get<int>();
+        std::tm localtime;
+        localtime_s(&localtime, &unixtime);
+
+        // Extract the individual components of the local time
+        //std::string year = std::to_string(localtime->tm_year + 1900);    // Years since 1900
+        //std::string month = std::to_string(localtime->tm_mon + 1);       // Months since January (0-11)
+        //std::string day = std::to_string(localtime->tm_mday);            // Day of the month (1-31)
+        //std::string hour = std::to_string(localtime->tm_hour);           // Hours since midnight (0-23)
+        //std::string minute = std::to_string(localtime->tm_min);          // Minutes after the hour (0-59)
+        //std::string second = std::to_string(localtime->tm_sec);          // Seconds after the minute (0-60)
+
+        char formattedtime[30];
+        std::strftime(formattedtime, sizeof(formattedtime), "%Y.%m.%d, %H:%M:%S", &localtime);
+
+
+        ImGui::Text(std::string("Last saved: " + std::string(formattedtime)).c_str()); // + year + "." + month + "." + day + ", " + hour + ":" + minute + ":" + second).c_str());
 
     }
+
 
     ImGui::SetCursorPosY(gvars.window.height * 0.72f / 2);
 
@@ -391,7 +410,10 @@ void user_interface_t::draw_play_screen() {
     }
 
     ImGui::SetCursorPosY(gvars.window.height * 0.72f - 40.f);
-    ImGui::Button("Continue!", { gvars.window.width * 0.3385f, 30.f });
+    if (ImGui::Button("Continue!", { gvars.window.width * 0.3385f, 30.f })) {
+        savefile.config = savefile.read_config();
+        this->intro_state = 5;
+    }
 
     if (!std::filesystem::exists(gvars.config.file_path)) {
         ImGui::PopStyleColor(3);
@@ -418,10 +440,10 @@ void user_interface_t::draw_game() {
     draw->AddRectFilled({ 4.f, 28.f }, { gvars.window.width - 4.f, 90.f }, ImColor(50, 50, 50, 255), 5.f);
 
     ImGui::SetCursorPosX(3.f);
-    ImGui::ProgressBar(game_manager.config["currency"]["amount"].get<float>() / 1000000.f, { gvars.window.width - 8.f, 30.f }, std::string(std::to_string((int)(game_manager.config["currency"]["amount"].get<float>() / 1000000.f * 100)) + "%").c_str());
+    ImGui::ProgressBar(savefile.config["currency"]["amount"].get<float>() / 1000000.f, { gvars.window.width - 8.f, 30.f }, std::string(std::to_string((int)(savefile.config["currency"]["amount"].get<float>())) + " | " + std::to_string((int)(savefile.config["currency"]["amount"].get<float>() / 1000000.f * 100)) + "%").c_str());
     
     ImGui::SetCursorPosX(7.f);
-    ImGui::Text("IAUHJSDGBFDIAGSD");
+    ImGui::Text(std::to_string(gvars.states.curtime).c_str());
 
     ImGui::EndChild();
 

@@ -60,6 +60,12 @@
     <ClCompile Include="source\currency\currency.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\savefile\savefile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\savefile\savefile.hpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\dx9_imgui\imgui\imconfig.h">

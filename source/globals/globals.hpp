@@ -16,6 +16,8 @@ struct globals_t {
 
 		bool should_exit = false; // set to true when you want to close program
 		float curtime = 0.f; // stores time since game start
+		std::string game_version = "Version: 0.1b";
+		std::string developer_str = "Made by BlueElixir";
 
 	} states;
 
