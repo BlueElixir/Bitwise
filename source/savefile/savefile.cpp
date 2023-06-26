@@ -10,7 +10,7 @@ void savefile_t::create_config() {
 
 	this->config["currency"] = {
 		{ "name", "Bits" },
-		{ "amount", 500.f }
+		{ "amount", 0.f }
 	};
 
 	this->config["upgrades"] = {
@@ -20,17 +20,17 @@ void savefile_t::create_config() {
 		{ "internal_name", "newcpu" },
 		{ "level", 0 },
 		{ "increment", 0.05f },
-		{ "base_price", 25.f },
-		{ "price_modifier", 1.5f }
+		{ "base_price", 20.f },
+		{ "price_modifier", 1.0f }
 	},
 	{
 		{ "name", "Increased Code Quality" },
 		{ "description", "Gain more bits per submission."},
 		{ "internal_name", "bettercode" },
 		{ "level", 0 },
-		{ "increment", 0.33f },
-		{ "base_price", 250.f },
-		{ "price_modifier", 2.415f }
+		{ "increment", 0.5f },
+		{ "base_price", 25.f },
+		{ "price_modifier", 3.0f }
 	},
 	{
 		{ "name", "Monitor Resolution" },
@@ -47,8 +47,8 @@ void savefile_t::create_config() {
 		{ "internal_name", "dst" },
 		{ "level", 0 },
 		{ "increment", 0.0f },
-		{ "base_price", 1000000.f },
-		{ "price_modifier", 0.0f }
+		{ "base_price", 100.f },
+		{ "price_modifier", 3.3f }
 	},
 	{
 		{ "name", "ChatGPT" },
@@ -56,8 +56,8 @@ void savefile_t::create_config() {
 		{ "internal_name", "idlebits" },
 		{ "level", 0 },
 		{ "increment", 0.5f },
-		{ "base_price", 10.f },
-		{ "price_modifier", 1.314f }
+		{ "base_price", 10.0f },
+		{ "price_modifier", 1.0f }
 	}
 	};
 
