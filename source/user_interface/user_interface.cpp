@@ -374,25 +374,43 @@ void user_interface_t::draw_play_screen() {
     if (std::filesystem::exists(gvars.config.file_path)) {
         ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-        ImGui::Text(std::string(savefile.config["currency"]["name"].get<std::string>() + " collected: " + std::to_string((int)savefile.config["currency"]["amount"].get<float>())).c_str());
-
-        static time_t unixtime = savefile.config["last_save_time"].get<int>();
-        std::tm localtime;
-        localtime_s(&localtime, &unixtime);
-
-        // Extract the individual components of the local time
-        //std::string year = std::to_string(localtime->tm_year + 1900);    // Years since 1900
-        //std::string month = std::to_string(localtime->tm_mon + 1);       // Months since January (0-11)
-        //std::string day = std::to_string(localtime->tm_mday);            // Day of the month (1-31)
-        //std::string hour = std::to_string(localtime->tm_hour);           // Hours since midnight (0-23)
-        //std::string minute = std::to_string(localtime->tm_min);          // Minutes after the hour (0-59)
-        //std::string second = std::to_string(localtime->tm_sec);          // Seconds after the minute (0-60)
-
-        char formattedtime[30];
-        std::strftime(formattedtime, sizeof(formattedtime), "%Y.%m.%d, %H:%M:%S", &localtime);
+        try {
+            ImGui::Text(std::string(savefile.config["currency"]["name"].get<std::string>() + " collected: " + std::to_string((int)savefile.config["currency"]["amount"].get<float>())).c_str());
 
 
-        ImGui::Text(std::string("Last saved: " + std::string(formattedtime)).c_str()); // + year + "." + month + "." + day + ", " + hour + ":" + minute + ":" + second).c_str());
+            static time_t s_unixtime = savefile.config["last_save_time"].get<int>();
+            std::tm s_localtime;
+            localtime_s(&s_localtime, &s_unixtime);
+
+            char s_formattedtime[30];
+            std::strftime(s_formattedtime, sizeof(s_formattedtime), "%Y.%m.%d, %H:%M:%S", &s_localtime);
+            ImGui::Text(std::string("Last saved: " + std::string(s_formattedtime)).c_str()); // + year + "." + month + "." + day + ", " + hour + ":" + minute + ":" + second).c_str());
+
+
+
+            static time_t c_unixtime = savefile.config["save_creation_time"].get<int>();
+
+            if (c_unixtime != 0) {
+
+                std::tm c_localtime;
+                localtime_s(&c_localtime, &c_unixtime);
+
+                char c_formattedtime[30];
+                std::strftime(c_formattedtime, sizeof(c_formattedtime), "%Y.%m.%d, %H:%M:%S", &c_localtime);
+                ImGui::Text(std::string("Save created: " + std::string(c_formattedtime)).c_str()); // + year + "." + month + "." + day + ", " + hour + ":" + minute + ":" + second).c_str());
+
+            }
+            else {
+                ImGui::Text(std::string("Save created: unknown").c_str());
+            }
+            
+        }
+        catch (std::exception e) {
+            ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 50, 50, 255));
+            ImGui::TextWrapped("\n\nSomething is wrong with your\nsavefile, is it outdated?");
+            ImGui::Text(std::string("Error: " + std::string(e.what())).c_str());
+            ImGui::PopStyleColor();
+        }
 
     }
 
@@ -430,7 +448,7 @@ void user_interface_t::draw_game() {
 
     ImGuiIO& io = ImGui::GetIO();
 
-    gvars.states.curtime += io.DeltaTime;
+    gvars.states.curtime += io.DeltaTime + savefile.config["upgrades"].at(3)["level"].get<int>() * savefile.config["upgrades"].at(3)["increment"].get<float>();
 
     ImGui::SetCursorPos({ 1, 28 });
     ImGui::BeginChild("GameWindow", { gvars.window.width - 2.f, gvars.window.height - 29.f }, false, ImGuiWindowFlags_NoBackground);
@@ -444,6 +462,23 @@ void user_interface_t::draw_game() {
     
     ImGui::SetCursorPosX(7.f);
     ImGui::Text(std::to_string(gvars.states.curtime).c_str());
+
+
+    // upgrades
+    for (int i = 0; i < 4; ++i) {
+
+        if (ImGui::Button(std::string("Upgrade: " + savefile.config["upgrades"].at(i)["name"].get<std::string>() + " " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>()) + " -> " + std::to_string(savefile.config["upgrades"].at(i)["level"].get<int>() + 1) + " | " + std::to_string(savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>())) + " Bits").c_str())) {
+
+            if (savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>()) <= savefile.config["currency"]["amount"].get<float>()) {
+
+                savefile.config["currency"]["amount"] = savefile.config["upgrades"].at(i)["base_price"].get<float>() + savefile.config["upgrades"].at(i)["base_price"].get<float>() * (savefile.config["upgrades"].at(i)["level"].get<int>() * savefile.config["upgrades"].at(i)["price_modifier"].get<float>());
+
+            }
+
+        }
+
+    }
+
 
     ImGui::EndChild();
 
@@ -461,6 +496,7 @@ void user_interface_t::do_draw() noexcept {
     if (ImGui::Begin("main window", 0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground)) {
 
         ImDrawList* draw = ImGui::GetWindowDrawList();
+        ImDrawList* drawfg = ImGui::GetForegroundDrawList();
 
         ImGuiStyle* style = &ImGui::GetStyle();
         ImVec4* colors = style->Colors;
@@ -490,9 +526,42 @@ void user_interface_t::do_draw() noexcept {
             draw_play_screen();
             break;
 
-        case 5:
-            draw_game();
-            break;
+        case 5: {
+
+            try {
+
+                draw_game();
+                break;
+
+            }
+            catch (std::exception e) {
+
+                std::vector<std::string> _warning = {
+                    "Warning: your savefile seems to be damaged.",
+                    "Unfortunately, this means that you will not be",
+                    "able to continue playing on this save file.",
+                    "You can try to contact us on Discord for help",
+                    "as a last resort: discord.gg/sKSR3C7hBD/"
+                };
+
+                draw->AddRectFilled({ gvars.window.width * 0.31f + 2, gvars.window.height * 0.35f + 2 }, { gvars.window.width * 0.69f + 2, gvars.window.height * 0.58f + 2 }, ImColor(0, 0, 0, 150), 10.f);
+                draw->AddRectFilled({ gvars.window.width * 0.31f, gvars.window.height * 0.35f }, { gvars.window.width * 0.69f, gvars.window.height * 0.58f }, ImColor(40, 40, 40), 10.f);
+                draw->AddRect({ gvars.window.width * 0.31f, gvars.window.height * 0.35f }, { gvars.window.width * 0.69f, gvars.window.height * 0.58f }, ImColor(255, 50, 50), 10.f);
+
+                for (size_t i = 0; i < _warning.size(); ++i) {
+                    draw->AddText({ (gvars.window.width - ImGui::CalcTextSize(_warning[i].c_str()).x) / 2.f, gvars.window.height * 0.37f + 16.f*i }, ImColor(255, 0, 0), _warning[i].c_str());
+                }
+                
+                ImGui::SetCursorPos({ gvars.window.width * 0.315f, gvars.window.height * 0.503f });
+                if (ImGui::Button("Okay", { gvars.window.width * 0.368f, gvars.window.height * 0.03f })) {
+                    //savefile.create_config();
+                    //savefile.write_config();
+                    user_interface.intro_state = 2;
+                }
+
+            }
+        }
+            
         }
         
     }

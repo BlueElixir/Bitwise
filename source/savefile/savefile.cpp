@@ -10,24 +10,24 @@ void savefile_t::create_config() {
 
 	this->config["currency"] = {
 		{ "name", "Bits" },
-		{ "amount", 100.f }
+		{ "amount", 0.f }
 	};
 
 	this->config["upgrades"] = {
 	{
 		{ "name", "New CPU" },
 		{ "description", "Increases manual programming speed."},
-		{ "internal_name", "" },
-		{ "level", 0.f },
+		{ "internal_name", "newcpu" },
+		{ "level", 0 },
 		{ "increment", 0.2f },
 		{ "base_price", 10.f },
 		{ "price_modifier", 1.618f }
 	},
 	{
-		{ "name", "Better IDE Font" },
-		{ "description", "Increases Code Quality"},
-		{ "internal_name", "" },
-		{ "level", 0.f },
+		{ "name", "Increased Code Quality" },
+		{ "description", " Gain more bits per submission."},
+		{ "internal_name", "bettercode" },
+		{ "level", 0 },
 		{ "increment", 0.1f },
 		{ "base_price", 2000.f },
 		{ "price_modifier", 2.415f }
@@ -35,8 +35,8 @@ void savefile_t::create_config() {
 	{
 		{ "name", "Monitor Resolution" },
 		{ "description", "Increases manual reviewing speed."},
-		{ "internal_name", "" },
-		{ "level", 0.f },
+		{ "internal_name", "highres" },
+		{ "level", 0 },
 		{ "increment", 0.2f },
 		{ "base_price", 20.f },
 		{ "price_modifier", 1.818f }
@@ -44,8 +44,8 @@ void savefile_t::create_config() {
 	{
 		{ "name", "Daylight Savings Time" },
 		{ "description", "Time advances more quickly."},
-		{ "internal_name", "" },
-		{ "level", 0.f },
+		{ "internal_name", "dst" },
+		{ "level", 0 },
 		{ "increment", 0.2f },
 		{ "base_price", 400.f },
 		{ "price_modifier", 3.14f }
@@ -58,6 +58,7 @@ void savefile_t::create_config() {
 	};
 
 	this->config["last_save_time"] = std::time(nullptr);
+	this->config["save_creation_time"] = std::time(nullptr);
 
 }
 
@@ -83,6 +84,14 @@ void savefile_t::write_config(json config, std::string filename) {
 
 	config = config != nullptr ? config : this->config;
 	filename = filename.length() != 0 ? filename : gvars.config.file_path;
+
+	try {
+		config["save_creation_time"].get<int>();
+	}
+	catch (std::exception e) {
+		config["save_creation_time"] = 0;
+		std::cout << "save_creation_time is null. Setting to 0. Re-read the savefile to update.";
+	}
 
 	std::ofstream file(filename);
 	if (file.is_open()) {
