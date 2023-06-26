@@ -9,3 +9,4 @@ prerequisites:
 other tools used for development:
 - Dear ImGui: https://github.com/ocornut/imgui
 - Github & GitHub Desktop: https://desktop.github.com/
+- nlohmann/json: https://github.com/nlohmann/json
